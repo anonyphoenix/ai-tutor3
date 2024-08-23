@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 
 function App() {
-  const account = useAccount()
-  const { connectors, connect, status, error } = useConnect()
-  const { disconnect } = useDisconnect()
+  const account = useAccount();
+  const { connectors, connect, status, error } = useConnect();
+  const { disconnect } = useDisconnect();
 
   return (
     <>
       <div>
         <h2>Account</h2>
-
+        <h1 className="text-3xl font-bold underline">Hello world!</h1>
         <div>
           status: {account.status}
           <br />
@@ -20,7 +20,7 @@ function App() {
           chainId: {account.chainId}
         </div>
 
-        {account.status === 'connected' && (
+        {account.status === "connected" && (
           <button type="button" onClick={() => disconnect()}>
             Disconnect
           </button>
@@ -42,7 +42,7 @@ function App() {
         <div>{error?.message}</div>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
