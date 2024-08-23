@@ -1,3 +1,5 @@
+import Header from "@/components/header";
+import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import AppKitProvider from "@/providers/Web3Provider";
 import { config } from "@/utils/config";
@@ -7,8 +9,6 @@ import { headers } from "next/headers";
 import { type ReactNode } from "react";
 import { cookieToInitialState } from "wagmi";
 import "./globals.css";
-import Header from "@/components/header";
-import { ThemeProvider } from "@/components/theme-provider";
 
 const fontSans = FontSans({
   subsets: ["latin"],

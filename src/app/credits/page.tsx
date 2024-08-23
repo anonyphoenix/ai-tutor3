@@ -10,26 +10,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/utils/constants";
+import { use, useEffect, useState } from "react";
 import { formatEther, parseEther } from "viem";
 import {
   useAccount,
   useConnect,
   useWaitForTransactionReceipt,
+  useWatchContractEvent,
   useWriteContract,
 } from "wagmi";
-
-// Replace with your actual contract address and ABI
-const CONTRACT_ADDRESS = "0xd74a7CC422443ed6606a953B5428305Df23b1047";
-const CONTRACT_ABI = [
-  {
-    inputs: [],
-    name: "topUpCredits",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-];
 
 // Conversion rate from the smart contract
 const CREDITS_PER_ETH = 10000;
@@ -39,12 +29,21 @@ export default function Component() {
   const { address, isConnected, chain } = useAccount();
   const { connect, connectors } = useConnect();
   const nativeCurrencySymbol = chain?.nativeCurrency.symbol || "ETH";
-
+  const [purchaseHistory, setPurchaseHistory] = useState([]);
   const { writeContract, data: hash } = useWriteContract();
-
-  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
+  const {
+    isLoading,
+    isSuccess,
+    data: successData,
+  } = useWaitForTransactionReceipt({
     hash,
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("successData: ", successData);
+    }
+  }, [isSuccess]);
 
   const calculateCost = (credits: number) => {
     return parseFloat(
@@ -147,6 +146,32 @@ export default function Component() {
           </TableBody>
         </Table>
       </div>
+      {/* <div className="w-full p-8 md:w-1/2">
+        <h2 className="text-2xl font-bold mb-4">Recent Purchases</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>User</TableHead>
+              <TableHead>ETH Paid</TableHead>
+              <TableHead>Credits Received</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {purchaseHistory.map((purchase, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  {purchase.user.slice(0, 6)}...{purchase.user.slice(-4)}
+                </TableCell>
+                <TableCell>
+                  {parseFloat(purchase.ethPaid).toFixed(4)}{" "}
+                  {nativeCurrencySymbol}
+                </TableCell>
+                <TableCell>{purchase.creditsReceived}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div> */}
     </div>
   );
 }
