@@ -8,6 +8,7 @@ import { type ReactNode } from "react";
 import { cookieToInitialState } from "wagmi";
 import "./globals.css";
 import Header from "@/components/header";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -27,10 +28,17 @@ export default function RootLayout(props: { children: ReactNode }) {
       <body
         className={cn("min-h-screen font-sans antialiased", fontSans.variable)}
       >
-        <AppKitProvider initialState={initialState}>
-          <Header />
-          {props.children}
-        </AppKitProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AppKitProvider initialState={initialState}>
+            <Header />
+            {props.children}
+          </AppKitProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

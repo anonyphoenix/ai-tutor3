@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { BookOpen, Brain, Search, Sparkles, Zap } from "lucide-react";
 import { useState } from "react";
-import Header from "./header";
 
 export default function FrontPage() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -20,7 +19,6 @@ export default function FrontPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white flex flex-col">
-      <Header />
       <main className="flex-grow p-6 space-y-8">
         <section>
           <h2 className="text-2xl font-bold mb-4 flex items-center">
