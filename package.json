@@ -3,6 +3,8 @@
   "packageManager": "bun@1.0.0",
   "scripts": {
     "dev": "turbo run dev --filter=web",
+    "dev:be": "turbo run dev --filter=be",
+    "beup": "cd apps/be && bun beup",
     "build": "turbo run build",
     "clean": "rm -rf node_modules",
     "lint": "turbo run lint",

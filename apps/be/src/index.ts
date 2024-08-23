@@ -1,15 +1,40 @@
 import { eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
-import { createPublicClient, decodeEventLog, http, parseAbiItem } from "viem";
-import { mainnet } from "viem/chains";
+import {
+  Chain,
+  createPublicClient,
+  decodeEventLog,
+  http,
+  parseAbiItem,
+} from "viem";
 import { db } from "./db";
 import { creditPurchases, customBots, web3Users } from "./db/schema";
 
 const app = new Hono();
 
+const openCampusCodex: Chain = {
+  id: 656476,
+  name: "Open Campus Codex",
+  nativeCurrency: {
+    decimals: 18,
+    name: "EDU",
+    symbol: "EDU",
+  },
+  rpcUrls: {
+    public: { http: ["https://rpc.open-campus-codex.gelato.digital"] },
+    default: { http: ["https://rpc.open-campus-codex.gelato.digital"] },
+  },
+  blockExplorers: {
+    default: {
+      name: "Blockscout",
+      url: "https://opencampus-codex.blockscout.com/",
+    },
+  },
+};
+
 // Create a public client
 const client = createPublicClient({
-  chain: mainnet,
+  chain: openCampusCodex,
   transport: http(),
 });
 
