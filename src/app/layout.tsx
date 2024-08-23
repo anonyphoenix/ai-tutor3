@@ -1,14 +1,17 @@
+import { cn } from "@/lib/utils";
+import AppKitProvider from "@/providers/Web3Provider";
 import { config } from "@/utils/config";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter as FontSans } from "next/font/google";
 import { headers } from "next/headers";
 import { type ReactNode } from "react";
 import { cookieToInitialState } from "wagmi";
 import "./globals.css";
 
-import AppKitProvider from "@/providers/Web3Provider";
-
-const inter = Inter({ subsets: ["latin"] });
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Create Wagmi",
@@ -20,7 +23,12 @@ export default function RootLayout(props: { children: ReactNode }) {
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable
+        )}
+      >
         <AppKitProvider initialState={initialState}>
           {props.children}
         </AppKitProvider>
