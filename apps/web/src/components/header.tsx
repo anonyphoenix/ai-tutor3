@@ -59,9 +59,7 @@ const Header = (props: HeaderProps) => {
               <span className="font-semibold mr-2">{credits}</span>
             )
           ) : (
-            <span className="font-semibold mr-2">
-              Connect wallet to view credits
-            </span>
+            <span className="font-semibold mr-2">{/* Connect First */}</span>
           )}
           <Link href="/credits" passHref>
             <Button variant="outline" size="sm" className="flex items-center">

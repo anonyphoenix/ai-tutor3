@@ -1,0 +1,25 @@
+{
+  "name": "ai-tutor3-be",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "railway run bun run --watch src/index.ts",
+    "db:generate": "railway run drizzle-kit generate",
+    "db:push": "railway run drizzle-kit push",
+    "db:seed": "railway run bun run src/db/seed.ts"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.6",
+    "bun-types": "latest",
+    "drizzle-kit": "^0.23.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.32.1",
+    "hono": "^4.5.3",
+    "pg": "^8.12.0",
+    "viem": "^2.20.0"
+  }
+}

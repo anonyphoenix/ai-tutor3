@@ -1,55 +1,20 @@
 {
-  "name": "wagmi-project",
   "private": true,
-  "version": "0.0.0",
+  "packageManager": "bun@1.0.0",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@ai-sdk/openai": "^0.0.53",
-    "@hookform/resolvers": "^3.9.0",
-    "@radix-ui/react-avatar": "^1.1.0",
-    "@radix-ui/react-checkbox": "^1.1.1",
-    "@radix-ui/react-dialog": "^1.1.1",
-    "@radix-ui/react-label": "^2.1.0",
-    "@radix-ui/react-progress": "^1.1.0",
-    "@radix-ui/react-slot": "^1.1.0",
-    "@radix-ui/react-toast": "^1.2.1",
-    "@tanstack/react-query": "5.45.1",
-    "@web3modal/wagmi": "^5.1.2",
-    "ai": "^3.3.17",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "framer-motion": "^11.3.30",
-    "lucide-react": "^0.435.0",
-    "next": "14.2.4",
-    "next-themes": "^0.3.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-hook-form": "^7.52.2",
-    "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7",
-    "viem": "latest",
-    "wagmi": "latest",
-    "zod": "^3.23.8"
+    "dev": "turbo run dev --filter=web",
+    "build": "turbo run build",
+    "clean": "rm -rf node_modules",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@types/node": "^20.12.10",
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.0",
-    "@wagmi/cli": "latest",
-    "autoprefixer": "^10.4.20",
-    "bufferutil": "^4.0.8",
-    "encoding": "^0.1.13",
-    "lokijs": "^1.5.12",
-    "pino-pretty": "^10.3.1",
-    "postcss": "^8.4.41",
-    "supports-color": "^9.4.0",
-    "tailwindcss": "^3.4.10",
-    "typescript": "^5.4.5",
-    "utf-8-validate": "^5.0.2"
-  }
+    "eslint": "^8.48.0",
+    "prettier": "^3.0.3",
+    "turbo": "latest"
+  },
+  "name": "ai-tutor3",
+  "workspaces": [
+    "apps/*"
+  ]
 }
