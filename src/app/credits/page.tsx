@@ -1,27 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
+import { useState } from "react";
+import { formatEther, parseEther } from "viem";
 import {
   useAccount,
   useConnect,
-  useWriteContract,
   useWaitForTransactionReceipt,
+  useWriteContract,
 } from "wagmi";
-import { parseEther, formatEther } from "viem";
 
 // Replace with your actual contract address and ABI
-const CONTRACT_ADDRESS = "0x...";
+const CONTRACT_ADDRESS = "0xd74a7CC422443ed6606a953B5428305Df23b1047";
 const CONTRACT_ABI = [
   {
     inputs: [],
@@ -37,8 +36,9 @@ const CREDITS_PER_ETH = 10000;
 
 export default function Component() {
   const [credits, setCredits] = useState(100);
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, chain } = useAccount();
   const { connect, connectors } = useConnect();
+  const nativeCurrencySymbol = chain?.nativeCurrency.symbol || "ETH";
 
   const { writeContract, data: hash } = useWriteContract();
 
@@ -69,7 +69,7 @@ export default function Component() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row min-h-[calc(100vh-64px)]">
       <div className="flex flex-col items-center justify-center w-full p-8 space-y-4 md:w-1/2">
         <h2 className="text-2xl font-bold text-center">
           How many credits would you like to purchase?
@@ -87,7 +87,7 @@ export default function Component() {
           <span>credits</span>
         </div>
         <div className="text-4xl font-bold text-center text-primary">
-          {calculateCost(credits).toFixed(6)} ETH
+          {calculateCost(credits).toFixed(6)} {nativeCurrencySymbol}
         </div>
         <p className="text-center text-muted-foreground">one time</p>
         <Button
@@ -105,46 +105,47 @@ export default function Component() {
           <p className="text-green-500">Credits purchased successfully!</p>
         )}
       </div>
-      <div className="w-full p-8 md:w-1/2">
+      <div className="flex items-center justify-center w-full p-8 md:w-1/2">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Credits</TableHead>
-              <TableHead>Cost in ETH</TableHead>
+              <TableHead>Cost in {nativeCurrencySymbol}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
               <TableCell>1,000</TableCell>
-              <TableCell>{(1000 / CREDITS_PER_ETH).toFixed(4)} ETH</TableCell>
+              <TableCell>
+                {(1000 / CREDITS_PER_ETH).toFixed(4)} {nativeCurrencySymbol}
+              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>5,000</TableCell>
-              <TableCell>{(5000 / CREDITS_PER_ETH).toFixed(4)} ETH</TableCell>
+              <TableCell>
+                {(5000 / CREDITS_PER_ETH).toFixed(4)} {nativeCurrencySymbol}
+              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>10,000</TableCell>
-              <TableCell>{(10000 / CREDITS_PER_ETH).toFixed(4)} ETH</TableCell>
+              <TableCell>
+                {(10000 / CREDITS_PER_ETH).toFixed(4)} {nativeCurrencySymbol}
+              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>50,000</TableCell>
-              <TableCell>{(50000 / CREDITS_PER_ETH).toFixed(4)} ETH</TableCell>
+              <TableCell>
+                {(50000 / CREDITS_PER_ETH).toFixed(4)} {nativeCurrencySymbol}
+              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>100,000</TableCell>
-              <TableCell>{(100000 / CREDITS_PER_ETH).toFixed(4)} ETH</TableCell>
+              <TableCell>
+                {(100000 / CREDITS_PER_ETH).toFixed(4)} {nativeCurrencySymbol}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>
-        <div className="mt-4 text-center">
-          <Link
-            href="#"
-            className="text-blue-600 hover:underline"
-            prefetch={false}
-          >
-            Have a group code?
-          </Link>
-        </div>
       </div>
     </div>
   );
