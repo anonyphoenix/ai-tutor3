@@ -109,3 +109,29 @@ export async function createOrUpdateUserAction(address: string) {
   revalidatePath("/profile"); // Assuming you have a profile page
   return result;
 }
+
+export interface Purchase {
+  txHash: string;
+  ethPaid: string;
+  creditsReceived: string;
+  purchasedAt: Date | null;
+}
+
+export async function fetchPurchaseHistoryAction(
+  address: string
+): Promise<Purchase[]> {
+  const response = await fetch(`${API_URL}/purchases/${address}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch purchase history");
+  }
+
+  const result: Purchase[] = await response.json();
+  revalidatePath("/credits"); // Assuming you have a purchases page
+  return result;
+}

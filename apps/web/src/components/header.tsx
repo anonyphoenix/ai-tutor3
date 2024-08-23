@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { Button } from "./ui/button";
+import { useCredits } from "@/app/contexts/CreditsContext";
 
 interface HeaderProps {
   // Add any props you want to pass to the Header component
@@ -13,31 +14,7 @@ interface HeaderProps {
 
 const Header = (props: HeaderProps) => {
   const { address } = useAccount();
-  const [credits, setCredits] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchCredits = async () => {
-      if (address) {
-        setLoading(true);
-        setError(null);
-        try {
-          const { credits } = await getUserCreditsAction(address);
-          setCredits(credits);
-        } catch (err) {
-          setError("Failed to fetch credits");
-          console.error(err);
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setCredits(null);
-      }
-    };
-
-    fetchCredits();
-  }, [address]);
+  const { credits } = useCredits();
 
   return (
     <header className="flex justify-between items-center p-4 bg-white bg-opacity-10 backdrop-blur-md">
@@ -51,13 +28,9 @@ const Header = (props: HeaderProps) => {
         <div className="flex items-center">
           <Coins className="mr-1 text-yellow-400" />
           {address ? (
-            loading ? (
-              <span className="font-semibold mr-2">Loading...</span>
-            ) : error ? (
-              <span className="font-semibold mr-2 text-red-500">Error</span>
-            ) : (
-              <span className="font-semibold mr-2">{credits}</span>
-            )
+            <span className="font-semibold mr-2">
+              {credits ?? "Loading..."}
+            </span>
           ) : (
             <span className="font-semibold mr-2">{/* Connect First */}</span>
           )}

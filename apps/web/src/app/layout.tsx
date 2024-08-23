@@ -9,6 +9,7 @@ import { headers } from "next/headers";
 import { type ReactNode } from "react";
 import { cookieToInitialState } from "wagmi";
 import "./globals.css";
+import { CreditsProvider } from "./contexts/CreditsContext";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -35,8 +36,10 @@ export default function RootLayout(props: { children: ReactNode }) {
           disableTransitionOnChange
         >
           <AppKitProvider initialState={initialState}>
-            <Header />
-            {props.children}
+            <CreditsProvider>
+              <Header />
+              {props.children}
+            </CreditsProvider>
           </AppKitProvider>
         </ThemeProvider>
       </body>

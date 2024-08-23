@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, desc } from "drizzle-orm";
 import { Hono } from "hono";
 import {
   Chain,
@@ -204,6 +204,28 @@ app.get("/bots/public", async (c) => {
     .from(customBots)
     .where(eq(customBots.isPublic, true));
   return c.json(publicBots);
+});
+
+app.get("/purchases/:address", async (c) => {
+  const address = c.req.param("address");
+
+  try {
+    const purchases = await db
+      .select({
+        txHash: creditPurchases.txHash,
+        ethPaid: creditPurchases.ethPaid,
+        creditsReceived: creditPurchases.creditsReceived,
+        purchasedAt: creditPurchases.purchasedAt,
+      })
+      .from(creditPurchases)
+      .where(eq(creditPurchases.userAddress, address))
+      .orderBy(desc(creditPurchases.purchasedAt));
+
+    return c.json(purchases);
+  } catch (error) {
+    console.error("Error fetching purchases:", error);
+    return c.json({ error: "Failed to fetch purchases" }, 500);
+  }
 });
 
 export default {
