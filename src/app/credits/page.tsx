@@ -18,7 +18,7 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { parseEther } from "viem";
+import { parseEther, formatEther } from "viem";
 
 // Replace with your actual contract address and ABI
 const CONTRACT_ADDRESS = "0x...";
@@ -32,6 +32,9 @@ const CONTRACT_ABI = [
   },
 ];
 
+// Conversion rate from the smart contract
+const CREDITS_PER_ETH = 10000;
+
 export default function Component() {
   const [credits, setCredits] = useState(100);
   const { address, isConnected } = useAccount();
@@ -44,13 +47,9 @@ export default function Component() {
   });
 
   const calculateCost = (credits: number) => {
-    if (credits < 2500) return credits * 0.09;
-    if (credits < 5000) return credits * 0.085;
-    if (credits < 10000) return credits * 0.075;
-    if (credits < 20000) return credits * 0.07;
-    if (credits < 50000) return credits * 0.065;
-    if (credits < 100000) return credits * 0.06;
-    return credits * 0.055;
+    return parseFloat(
+      formatEther((BigInt(credits) * BigInt(1e18)) / BigInt(CREDITS_PER_ETH))
+    );
   };
 
   const handleBuyCredits = async () => {
@@ -88,7 +87,7 @@ export default function Component() {
           <span>credits</span>
         </div>
         <div className="text-4xl font-bold text-center text-primary">
-          ${calculateCost(credits).toFixed(2)}
+          {calculateCost(credits).toFixed(6)} ETH
         </div>
         <p className="text-center text-muted-foreground">one time</p>
         <Button
@@ -111,37 +110,29 @@ export default function Component() {
           <TableHeader>
             <TableRow>
               <TableHead>Credits</TableHead>
-              <TableHead>Cost per Credit</TableHead>
+              <TableHead>Cost in ETH</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableCell className="text-red-600">100 - 2,499</TableCell>
-              <TableCell className="text-red-600">9.0¢</TableCell>
+              <TableCell>1,000</TableCell>
+              <TableCell>{(1000 / CREDITS_PER_ETH).toFixed(4)} ETH</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>2,500 - 4,999</TableCell>
-              <TableCell>8.5¢</TableCell>
+              <TableCell>5,000</TableCell>
+              <TableCell>{(5000 / CREDITS_PER_ETH).toFixed(4)} ETH</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>5,000 - 9,999</TableCell>
-              <TableCell>7.5¢</TableCell>
+              <TableCell>10,000</TableCell>
+              <TableCell>{(10000 / CREDITS_PER_ETH).toFixed(4)} ETH</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>10,000 - 19,999</TableCell>
-              <TableCell>7.0¢</TableCell>
+              <TableCell>50,000</TableCell>
+              <TableCell>{(50000 / CREDITS_PER_ETH).toFixed(4)} ETH</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>20,000 - 49,999</TableCell>
-              <TableCell>6.5¢</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>50,000 - 99,999</TableCell>
-              <TableCell>6.0¢</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>100,000 - 249,999</TableCell>
-              <TableCell>5.5¢</TableCell>
+              <TableCell>100,000</TableCell>
+              <TableCell>{(100000 / CREDITS_PER_ETH).toFixed(4)} ETH</TableCell>
             </TableRow>
           </TableBody>
         </Table>
