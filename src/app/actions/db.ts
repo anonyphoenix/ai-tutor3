@@ -48,7 +48,9 @@ export async function getUserCreditsAction(address: string) {
     throw new Error("Failed to fetch user credits");
   }
 
-  return response.json();
+  const result = await response.json();
+  revalidatePath("/credits"); // Revalidate profile page as user might be created
+  return result;
 }
 
 export async function createCustomBotAction(botData: {
@@ -88,4 +90,22 @@ export async function fetchPublicBotsAction() {
   }
 
   return response.json();
+}
+
+export async function createOrUpdateUserAction(address: string) {
+  const response = await fetch(`${API_URL}/users`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create or update user");
+  }
+
+  const result = await response.json();
+  revalidatePath("/profile"); // Assuming you have a profile page
+  return result;
 }
