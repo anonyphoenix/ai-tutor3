@@ -68,13 +68,13 @@ export default function CreateCustomBotPage() {
         ...values,
         creatorAddress: address,
         imageUrl:
-          "https://github.com/user-attachments/assets/0bef7def-b75d-4ace-8c8f-bde145ea7949",
+          "https://res.cloudinary.com/dzkwltgyd/image/upload/v1724533260/glif-run-outputs/axgs45lxp7khr83ck2t0.jpg",
       });
       toast({
         title: "Success",
         description: "Your custom bot has been created.",
       });
-      router.push("/bots"); // Redirect to bots page after successful creation
+      router.push("/"); // Redirect to bots page after successful creation
     } catch (error) {
       toast({
         title: "Error",
