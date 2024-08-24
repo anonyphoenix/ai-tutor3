@@ -47,6 +47,27 @@ app.get("/users", async (c) => {
   return c.json(allUsers);
 });
 
+app.get("/user/:address", async (c) => {
+  const address = c.req.param("address");
+
+  try {
+    const user = await db
+      .select()
+      .from(web3Users)
+      .where(eq(web3Users.address, address))
+      .limit(1);
+
+    if (user.length === 0) {
+      return c.json({ error: "User not found" }, 404);
+    }
+
+    return c.json(user[0]);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return c.json({ error: "Failed to fetch user" }, 500);
+  }
+});
+
 app.post("/users", async (c) => {
   const body = await c.req.json();
   const { address } = body;
@@ -79,6 +100,7 @@ app.post("/users", async (c) => {
           address,
           totalCredits: "5",
           lastActive: new Date(),
+          xp: "0",
         })
         .returning();
 
@@ -147,7 +169,6 @@ app.get("/extract-event/:txHash", async (c) => {
   }
 });
 
-// New endpoint to get user credits
 app.get("/user/:address/credits", async (c) => {
   const address = c.req.param("address");
   const user = await db
@@ -164,6 +185,7 @@ app.get("/user/:address/credits", async (c) => {
         address,
         totalCredits: "5",
         lastActive: new Date(),
+        xp: "0",
       })
       .returning();
 
@@ -172,6 +194,42 @@ app.get("/user/:address/credits", async (c) => {
 
   return c.json({ credits: user[0].totalCredits });
 });
+
+// New endpoint to add XP
+app.post("/user/:address/xp", async (c) => {
+  const address = c.req.param("address");
+  const body = await c.req.json();
+  const { xp } = body;
+
+  if (!xp) {
+    return c.json({ error: "XP is required" }, 400);
+  }
+
+  try {
+    // Check if user already exists
+    const existingUser = await db
+      .select()
+      .from(web3Users)
+      .where(eq(web3Users.address, address))
+      .limit(1);
+
+    if (existingUser.length > 0) {
+      // User exists, update XP
+      await db
+        .update(web3Users)
+        .set({ xp: sql`${web3Users.xp} + ${xp}` })
+        .where(eq(web3Users.address, address));
+
+      return c.json({ message: "XP updated" });
+    } else {
+      return c.json({ error: "User not found" }, 404);
+    }
+  } catch (error) {
+    console.error("Error adding XP:", error);
+    return c.json({ error: "Failed to add XP" }, 500);
+  }
+});
+
 // New endpoint to create a custom bot
 app.post("/bots", async (c) => {
   const body = await c.req.json();

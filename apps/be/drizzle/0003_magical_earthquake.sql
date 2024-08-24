@@ -1,0 +1,1 @@
+ALTER TABLE "web3_users" ADD COLUMN "xp" numeric DEFAULT '0';

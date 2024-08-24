@@ -11,6 +11,7 @@ export const web3Users = pgTable("web3_users", {
   address: text("address").primaryKey(),
   lastActive: timestamp("last_active", { withTimezone: true }),
   totalCredits: numeric("total_credits").default("0"),
+  xp: numeric("xp").default("0"),
 });
 
 export const creditPurchases = pgTable("credit_purchases", {
