@@ -8,6 +8,8 @@ import { Tutor } from "@/components/frontpage/section1";
 import { fetchPublicBotsAction } from "../actions/db";
 import { useSearchParams } from "next/navigation";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import ReactMarkdown from "react-markdown";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -52,20 +54,26 @@ export default function Chat() {
   }, [botId]);
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex-grow overflow-hidden">
-        <div className="h-full py-24 mx-auto max-w-xl">
-          <ScrollArea className="h-full rounded-md border p-4">
-            {messages.map((m, i) => (
-              <div key={i} className="whitespace-pre-wrap">
-                {m.role === "user" ? "User: " : "AI: "}
-                {m.content as string}
-              </div>
-            ))}
-          </ScrollArea>
+    <>
+      <div className="flex flex-col">
+        <div className="flex-grow overflow-hidden">
+          <div className="h-full py-24 mx-auto max-w-xl">
+            <ScrollArea className="h-full rounded-md border p-4">
+              {messages.map((m, i) => (
+                <div key={i} className="mb-4">
+                  <Badge variant="outline" className="mb-2">
+                    {m.role === "user" ? "User: " : "AI: "}
+                  </Badge>
+                  <ReactMarkdown className="prose dark:prose-invert max-w-none">
+                    {m.content as string}
+                  </ReactMarkdown>
+                </div>
+              ))}
+            </ScrollArea>
+          </div>
         </div>
       </div>
-      <div className="flex justify-center items-center p-4">
+      <div className="fixed bottom-0 flex justify-center items-center p-4 w-full">
         <form
           className="w-full max-w-md"
           onSubmit={async (e) => {
@@ -99,6 +107,6 @@ export default function Chat() {
           />
         </form>
       </div>
-    </div>
+    </>
   );
 }
