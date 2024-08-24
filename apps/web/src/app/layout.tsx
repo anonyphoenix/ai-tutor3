@@ -10,6 +10,7 @@ import { type ReactNode } from "react";
 import { cookieToInitialState } from "wagmi";
 import "./globals.css";
 import { CreditsProvider } from "./contexts/CreditsContext";
+import { Toaster } from "@/components/ui/toaster";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout(props: { children: ReactNode }) {
             <CreditsProvider>
               <Header />
               <div className="pt-16">{props.children}</div>
+              <Toaster />
             </CreditsProvider>
           </AppKitProvider>
         </ThemeProvider>

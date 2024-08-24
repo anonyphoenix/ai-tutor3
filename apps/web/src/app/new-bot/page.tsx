@@ -52,8 +52,6 @@ export default function CreateCustomBotPage() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
-
     if (!address) {
       toast({
         title: "Error",
@@ -63,6 +61,7 @@ export default function CreateCustomBotPage() {
       return;
     }
 
+    setIsLoading(true);
     try {
       // Assuming the user's address is available. In a real app, you'd get this from authentication.
       await createCustomBotAction({
