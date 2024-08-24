@@ -5,8 +5,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-type Tutor = {
+export type Tutor = {
   id: number;
   name: string;
   creatorAddress: string | null;
@@ -27,6 +28,7 @@ const shortenEthAddress = (address: string | null): string => {
 export default function Component() {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [tutors, setTutors] = useState<Tutor[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTutors = async () => {
@@ -50,6 +52,10 @@ export default function Component() {
     }
   };
 
+  const handleCardClick = (tutor: Tutor) => {
+    router.push(`/chat?botId=${tutor.id}`);
+  };
+
   return (
     <div className="relative">
       <div
@@ -64,15 +70,18 @@ export default function Component() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className="bg-purple-900 text-white overflow-hidden h-96">
+            <Card
+              className="bg-purple-900 text-white overflow-hidden h-96 cursor-pointer"
+              onClick={() => handleCardClick(tutor)}
+            >
               <CardContent className="p-0 h-full">
-                <div className="p-4 h-1/3">
+                <div className="p-4">
                   <h3 className="font-bold text-xl mb-1">{tutor.name}</h3>
                   <p className="text-purple-300 text-sm mb-4">
                     {shortenEthAddress(tutor.creatorAddress)}
                   </p>
                 </div>
-                <div className="relative h-1/3">
+                <div className="relative">
                   <img
                     src={tutor.imageUrl}
                     alt={tutor.name}

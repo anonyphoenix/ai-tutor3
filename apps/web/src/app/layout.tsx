@@ -38,7 +38,7 @@ export default function RootLayout(props: { children: ReactNode }) {
           <AppKitProvider initialState={initialState}>
             <CreditsProvider>
               <Header />
-              {props.children}
+              <div className="pt-16">{props.children}</div>
             </CreditsProvider>
           </AppKitProvider>
         </ThemeProvider>

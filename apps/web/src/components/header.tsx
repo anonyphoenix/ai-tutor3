@@ -15,13 +15,23 @@ const Header = (props: HeaderProps) => {
   const { credits } = useCredits();
 
   return (
-    <header className="flex justify-between items-center p-4 bg-white bg-opacity-10 backdrop-blur-md">
-      <Link href="/" passHref>
-        <div className="text-2xl font-bold flex items-center cursor-pointer">
-          <Sparkles className="mr-2" />
-          AI Tutor
-        </div>
-      </Link>
+    <header className="fixed z-50 top-0 left-0 w-full flex justify-between items-center p-4 bg-white/30 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
+      <div className="flex items-center">
+        <Link href="/" passHref>
+          <div className="text-2xl font-bold flex items-center cursor-pointer mr-6">
+            <Sparkles className="mr-2" />
+            AI Tutor
+          </div>
+        </Link>
+        <nav className="flex space-x-4">
+          <Link href="/resume" passHref>
+            <Button variant="link">Resume Builder</Button>
+          </Link>
+          <Link href="/quiz" passHref>
+            <Button variant="link">Quiz</Button>
+          </Link>
+        </nav>
+      </div>
       <div className="flex items-center space-x-4">
         <div className="flex items-center">
           <Coins className="mr-1 text-yellow-400" />
