@@ -52,13 +52,14 @@ export async function getUserCreditsAction(address: string) {
   revalidatePath("/credits"); // Revalidate profile page as user might be created
   return result;
 }
-
 export async function createCustomBotAction(botData: {
   creatorAddress: string;
   name: string;
   description: string;
   prompt: string;
-  isPublic?: boolean;
+  isPublic: boolean;
+  imageUrl?: string;
+  likes?: number;
 }) {
   const response = await fetch(`${API_URL}/bots`, {
     method: "POST",

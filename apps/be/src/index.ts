@@ -172,11 +172,18 @@ app.get("/user/:address/credits", async (c) => {
 
   return c.json({ credits: user[0].totalCredits });
 });
-
 // New endpoint to create a custom bot
 app.post("/bots", async (c) => {
   const body = await c.req.json();
-  const { creatorAddress, name, description, prompt, isPublic } = body;
+  const {
+    creatorAddress,
+    name,
+    description,
+    prompt,
+    isPublic,
+    imageUrl,
+    likes,
+  } = body;
 
   try {
     const newBot = await db
@@ -187,6 +194,8 @@ app.post("/bots", async (c) => {
         description,
         prompt,
         isPublic: isPublic || false,
+        imageUrl: imageUrl || null,
+        likes: likes || 0,
       })
       .returning();
 

@@ -1,15 +1,10 @@
-import { fetchPublicBotsAction } from "@/app/actions/db";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { motion } from "framer-motion";
-import { BookOpen, Brain, Zap } from "lucide-react";
-import { useEffect, useState } from "react";
+import { BookOpen, Brain } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import Section1 from "./section1";
 
 export default function FrontPage() {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-
   const cardVariants = {
     hover: {
       scale: 1.05,
@@ -35,9 +30,11 @@ export default function FrontPage() {
             Design a custom AI tutor tailored to your learning style and goals.
             Personalize everything from teaching methods to subject expertise!
           </p>
-          <Button className="bg-white text-purple-600 hover:bg-purple-100 text-lg px-6 py-3 rounded-full">
-            Create Your Tutor
-          </Button>
+          <Link href={"/new-bot"}>
+            <Button className="bg-white text-purple-600 hover:bg-purple-100 text-lg px-6 py-3 rounded-full">
+              Create Your Tutor
+            </Button>
+          </Link>
         </section>
       </main>
 
