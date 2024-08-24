@@ -1,10 +1,11 @@
 "use client";
 
-import { useCredits } from "@/app/contexts/CreditsContext";
+import { useUserContext } from "@/app/contexts/UserContext";
 import { Coins, Plus, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import { Button } from "./ui/button";
+import XpBar from "./xp-bar";
 
 interface HeaderProps {
   // Add any props you want to pass to the Header component
@@ -12,7 +13,7 @@ interface HeaderProps {
 
 const Header = (props: HeaderProps) => {
   const { address } = useAccount();
-  const { credits } = useCredits();
+  const { credits, user } = useUserContext();
 
   return (
     <header className="fixed z-50 top-0 left-0 w-full flex justify-between items-center p-4 bg-white/30 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
@@ -24,6 +25,7 @@ const Header = (props: HeaderProps) => {
           </div>
         </Link>
         <nav className="flex space-x-4">
+          <XpBar xp={user?.xp ?? "0"} />
           <Link href="/resume" passHref>
             <Button variant="link">Resume Builder</Button>
           </Link>
@@ -34,18 +36,21 @@ const Header = (props: HeaderProps) => {
       </div>
       <div className="flex items-center space-x-4">
         <div className="flex items-center">
-          <Coins className="mr-1 text-yellow-400" />
-          {address ? (
-            <span className="font-semibold mr-2">
-              {credits ?? "Loading..."}
-            </span>
-          ) : (
-            <span className="font-semibold mr-2">{/* Connect First */}</span>
-          )}
           <Link href="/credits" passHref>
             <Button variant="outline" size="sm" className="flex items-center">
               <Plus className="h-4 w-4 mr-1" />
-              Top up
+
+              {address ? (
+                <span className="font-semibold ml-4 mr-2">
+                  {credits ?? "Loading..."}
+                </span>
+              ) : (
+                <span className="font-semibold ml-4 mr-2">
+                  {/* Connect First */}
+                </span>
+              )}
+
+              <Coins className="text-yellow-400 w-4" />
             </Button>
           </Link>
         </div>
