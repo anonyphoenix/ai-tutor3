@@ -30,3 +30,5 @@ The app is structured into the following components:
 - `apps/web/src/app/actions/db.ts`: This is the database actions file.
 - `apps/web/src/components`: This is where the application components are defined.
 - `apps/web/src/components/header.tsx`: This is the header component file.
+
+![CleanShot 2024-08-24 at 22 32 20@2x](https://github.com/user-attachments/assets/0bef7def-b75d-4ace-8c8f-bde145ea7949)
