@@ -1,12 +1,10 @@
 "use client";
 
-import { getUserCreditsAction } from "@/app/actions/db";
+import { useCredits } from "@/app/contexts/CreditsContext";
 import { Coins, Plus, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { Button } from "./ui/button";
-import { useCredits } from "@/app/contexts/CreditsContext";
 
 interface HeaderProps {
   // Add any props you want to pass to the Header component
