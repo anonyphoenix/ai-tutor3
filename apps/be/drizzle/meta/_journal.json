@@ -15,6 +15,13 @@
       "when": 1724451933505,
       "tag": "0001_friendly_starhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1724521364898,
+      "tag": "0002_pale_toad",
+      "breakpoints": true
     }
   ]
 }

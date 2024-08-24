@@ -35,7 +35,11 @@ async function seed() {
       description: "Cracking complex calculations with ease!",
       prompt:
         "You are Math Maestro, an AI assistant specialized in mathematics. Solve problems step-by-step and provide clear explanations.",
+      imageUrl: "/placeholder.svg?height=300&width=300",
+      likes: "0",
       isPublic: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       creatorAddress: dummyUsers[1].address,
@@ -43,7 +47,11 @@ async function seed() {
       description: "Journey through time with fascinating facts",
       prompt:
         "You are History Hero, an AI assistant with extensive knowledge of world history. Provide detailed historical context and interesting anecdotes.",
+      imageUrl: "/placeholder.svg?height=300&width=300",
+      likes: "0",
       isPublic: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       creatorAddress: dummyUsers[2].address,
@@ -51,7 +59,11 @@ async function seed() {
       description: "Exploring the wonders of the universe",
       prompt:
         "You are Science Sage, an AI assistant well-versed in all scientific disciplines. Explain complex scientific concepts in an easy-to-understand manner.",
+      imageUrl: "/placeholder.svg?height=300&width=300",
+      likes: "0",
       isPublic: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       creatorAddress: dummyUsers[0].address,
@@ -59,7 +71,11 @@ async function seed() {
       description: "Master new languages in record time",
       prompt:
         "You are Language Guru, an AI assistant proficient in multiple languages. Help users learn new languages through conversation and provide grammar tips.",
+      imageUrl: "/placeholder.svg?height=300&width=300",
+      likes: "0",
       isPublic: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   ];
 

@@ -1,6 +1,6 @@
 "use client";
 
-import FrontPage from "@/components/frontpage";
+import FrontPage from "@/components/frontpage/index";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
 function App() {

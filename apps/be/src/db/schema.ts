@@ -36,6 +36,8 @@ export const customBots = pgTable("custom_bots", {
   name: text("name").notNull(),
   description: text("description"),
   prompt: text("prompt").notNull(),
+  imageUrl: text("image_url"),
+  likes: numeric("likes").default("0"),
   isPublic: boolean("is_public").default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
