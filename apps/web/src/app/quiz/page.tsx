@@ -91,84 +91,86 @@ export default function Component() {
   return (
     <>
       {showConfetti && <Confetti />}
-      <Card className="w-full max-w-3xl mx-auto">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-2xl font-bold">
-            Awesome Quiz Application
-          </CardTitle>
-          {!quizEnded && (
-            <div className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-              Time Left {timeLeft}
-            </div>
-          )}
-        </CardHeader>
-        <CardContent>
-          {!quizEnded ? (
-            <>
-              <h2 className="text-xl font-semibold mb-4">
-                {currentQuestion + 1}. {quizData[currentQuestion].question}
-              </h2>
-              <div className="space-y-2">
-                {quizData[currentQuestion].options.map((option, index) => (
-                  <div
-                    key={index}
-                    className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                      selectedAnswer === index
-                        ? "bg-green-100 dark:bg-green-800"
-                        : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
-                    }`}
-                    onClick={() => handleAnswerSelect(index)}
-                  >
-                    {option}
-                  </div>
-                ))}
+      <div className="pt-10">
+        <Card className="w-full max-w-3xl mx-auto">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-2xl font-bold">
+              Awesome Quiz Application
+            </CardTitle>
+            {!quizEnded && (
+              <div className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                Time Left {timeLeft}
               </div>
-              <div className="mt-4 flex justify-between items-center">
-                <div className="text-sm text-gray-500">
-                  {currentQuestion + 1} of {quizData.length} Questions
+            )}
+          </CardHeader>
+          <CardContent>
+            {!quizEnded ? (
+              <>
+                <h2 className="text-xl font-semibold mb-4">
+                  {currentQuestion + 1}. {quizData[currentQuestion].question}
+                </h2>
+                <div className="space-y-2">
+                  {quizData[currentQuestion].options.map((option, index) => (
+                    <div
+                      key={index}
+                      className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                        selectedAnswer === index
+                          ? "bg-green-100 dark:bg-green-800"
+                          : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+                      }`}
+                      onClick={() => handleAnswerSelect(index)}
+                    >
+                      {option}
+                    </div>
+                  ))}
                 </div>
-                <Button
-                  onClick={handleNextQuestion}
-                  disabled={selectedAnswer === null}
-                >
-                  {currentQuestion === quizData.length - 1
-                    ? "Finish"
-                    : "Next Question"}
-                </Button>
-              </div>
-            </>
-          ) : (
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-4">Quiz Ended!</h2>
-              <p className="mb-4">
-                You got {correctAnswers} out of {quizData.length} questions
-                correct.
-              </p>
-              {correctAnswers === quizData.length ? (
-                <div className="mb-4">
-                  <p className="text-green-600 font-semibold mb-2">
-                    Congratulations! You answered all questions correctly!
-                  </p>
-                  <Button onClick={mintNFTCredential}>
-                    Mint NFT Credential
+                <div className="mt-4 flex justify-between items-center">
+                  <div className="text-sm text-gray-500">
+                    {currentQuestion + 1} of {quizData.length} Questions
+                  </div>
+                  <Button
+                    onClick={handleNextQuestion}
+                    disabled={selectedAnswer === null}
+                  >
+                    {currentQuestion === quizData.length - 1
+                      ? "Finish"
+                      : "Next Question"}
                   </Button>
                 </div>
-              ) : (
-                <p className="text-yellow-600 mb-4">
-                  Keep practicing to improve your score!
+              </>
+            ) : (
+              <div className="text-center">
+                <h2 className="text-2xl font-bold mb-4">Quiz Ended!</h2>
+                <p className="mb-4">
+                  You got {correctAnswers} out of {quizData.length} questions
+                  correct.
                 </p>
-              )}
-              <Button onClick={handlePlayAgain}>Play Again</Button>
-            </div>
+                {correctAnswers === quizData.length ? (
+                  <div className="mb-4">
+                    <p className="text-green-600 font-semibold mb-2">
+                      Congratulations! You answered all questions correctly!
+                    </p>
+                    <Button onClick={mintNFTCredential}>
+                      Mint NFT Credential
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-yellow-600 mb-4">
+                    Keep practicing to improve your score!
+                  </p>
+                )}
+                <Button onClick={handlePlayAgain}>Play Again</Button>
+              </div>
+            )}
+          </CardContent>
+          {!quizEnded && (
+            <Progress
+              value={((currentQuestion + 1) / quizData.length) * 100}
+              className="mt-4"
+            />
           )}
-        </CardContent>
-        {!quizEnded && (
-          <Progress
-            value={((currentQuestion + 1) / quizData.length) * 100}
-            className="mt-4"
-          />
-        )}
-      </Card>
+        </Card>
+      </div>
     </>
   );
 }

@@ -133,6 +133,26 @@ export default function StudentProfile() {
     <div className="container mx-auto p-4 space-y-8">
       <h1 className="text-3xl font-bold">Student Profile</h1>
 
+      {/* <div className="w-full max-w-md mx-auto p-4 space-y-4">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-bold">Level {level}</h2>
+          <p className="text-sm text-muted-foreground">
+            XP: {currentXp} / {maxXp}
+          </p>
+          <p className="text-xs text-muted-foreground">Total XP: {xp}</p>
+        </div>
+        <div className="relative pt-1">
+          <Progress value={progress} className="h-4" />
+          <motion.div
+            className="absolute top-0 left-0 h-4 bg-primary rounded-full"
+            style={{ width: `${progress}%` }}
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ type: "spring", stiffness: 100, damping: 15 }}
+          />
+        </div>
+      </div> */}
+
       <Card>
         <CardHeader>
           <CardTitle>Address Information</CardTitle>
