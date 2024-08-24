@@ -25,7 +25,7 @@ import {
   fetchPurchaseHistoryAction,
   Purchase,
 } from "../actions/db";
-import { useCredits } from "../contexts/CreditsContext";
+import { useUserContext } from "../contexts/UserContext";
 
 const CREDITS_PER_ETH = 10000;
 
@@ -43,14 +43,14 @@ export default function Component() {
   } = useWaitForTransactionReceipt({
     hash,
   });
-  const { refreshCredits } = useCredits();
+  const { refreshUser } = useUserContext();
 
   useEffect(() => {
     if (isSuccess && successData) {
       console.log("Transaction successful, extracting event data...");
       extractEventAction(successData.transactionHash).then((eventData) => {
         console.log("Extracted event data:", eventData);
-        refreshCredits(); // Refresh credits after successful purchase
+        refreshUser(); // Refresh credits after successful purchase
       });
     }
   }, [isSuccess, successData]);

@@ -136,3 +136,36 @@ export async function fetchPurchaseHistoryAction(
   revalidatePath("/credits"); // Assuming you have a purchases page
   return result;
 }
+
+export async function addXpAction(address: string, xpToAdd: number) {
+  const response = await fetch(`${API_URL}/user/${address}/xp`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ xp: xpToAdd }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to add XP");
+  }
+
+  const result = await response.json();
+  return result;
+}
+
+export async function getUserAction(address: string) {
+  const response = await fetch(`${API_URL}/user/${address}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user");
+  }
+
+  const result = await response.json();
+  return result;
+}
