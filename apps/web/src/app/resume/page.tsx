@@ -1,31 +1,42 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
 import { Heart, Share2 } from "lucide-react";
-import { processGlifAction } from "../actions/tools";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { processGlifAction } from "../actions/tools";
+
+export function useProcessGlif() {
+  return useMutation({
+    mutationFn: (inputString: string) => processGlifAction(inputString),
+  });
+}
 
 export default function Component() {
   const [resumeContent, setResumeContent] = useState("");
-  const [generatedResumeUrl, setGeneratedResumeUrl] = useState<string>();
   const [liked, setLiked] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    mutate: processGlif,
+    isPending,
+    error,
+    isError,
+    data: generatedResumeUrl,
+  } = useProcessGlif();
 
-  const handleResumeGeneration = async () => {
-    setIsLoading(true);
-    try {
-      const result = await processGlifAction(resumeContent);
-      setGeneratedResumeUrl(result.output);
-    } catch (error) {
+  useEffect(() => {
+    if (isError) {
       console.error("Error generating resume:", error);
-      // You might want to show an error message to the user here
-    } finally {
-      setIsLoading(false);
+      toast({
+        title: "Error",
+        description: "Failed to generate resume. Please try again.",
+        variant: "destructive",
+      });
     }
-  };
+  }, [isError, error]);
 
   const handleLike = () => {
     setLiked(!liked);
@@ -58,11 +69,11 @@ export default function Component() {
             onChange={(e) => setResumeContent(e.target.value)}
           />
           <Button
-            onClick={handleResumeGeneration}
+            onClick={() => processGlif(resumeContent)}
             className="w-full bg-black text-white hover:bg-gray-800"
-            disabled={isLoading || !resumeContent}
+            disabled={isPending || !resumeContent}
           >
-            {isLoading ? "Generating..." : "Generate Resume"}
+            {isPending ? "Generating..." : "Generate Resume"}
           </Button>
         </div>
         <div className="w-1/2 p-4 bg-white border-l flex flex-col">
@@ -71,7 +82,7 @@ export default function Component() {
             {generatedResumeUrl ? (
               <div className="rounded-lg overflow-hidden shadow-lg">
                 <Image
-                  src={generatedResumeUrl}
+                  src={generatedResumeUrl.output}
                   alt="Generated Resume"
                   width={500}
                   height={700}
