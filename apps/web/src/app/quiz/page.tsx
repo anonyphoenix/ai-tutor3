@@ -39,8 +39,12 @@ export default function Component() {
   const searchParams = useSearchParams();
   const quizId = Number(searchParams.get("id"));
   const { address } = useAccount();
-  const { writeContract, data: hash } = useWriteContract();
-  const { isPending: isPendingTx, isSuccess } = useWaitForTransactionReceipt({
+  const {
+    writeContract,
+    data: hash,
+    isPending: isPendingTx,
+  } = useWriteContract();
+  const { isSuccess } = useWaitForTransactionReceipt({
     hash,
   });
   const router = useRouter();
@@ -106,31 +110,31 @@ export default function Component() {
 
   const mintNFTCredential = async () => {
     const quizTitle = quizDatas.find((quiz) => quiz.id === quizId)?.title;
-    if (quizData && certificateName.trim()) {
-      // create image url
-      const data = await genCertificateImageAsync({
-        name: certificateName,
-        quiz: quizTitle ?? "AI TUTOR",
-      });
-
-      // create metadata uri
-      const { id: tokenId } = await createNFTMetadataAction(
-        `${quizTitle} Completion Certificate`,
-        `Congratulations to ${certificateName} on completing the ${quizTitle} quiz!`,
-        data.output
-      );
-      const tokenURI = `${BASE_URL}/api/?id=${tokenId}`;
-
-      console.log("Minting NFT credential...");
-
-      // mint nft
-      writeContract({
-        address: CERTIFICATE_CONTRACT_ADDRESS,
-        abi: CERTIFICATE_CONTRACT_ABI,
-        functionName: "mintNFT",
-        args: [address, tokenURI],
-      });
+    if (!quizTitle || !certificateName.trim()) {
+      throw new Error("Invalid quiz data or certificate name");
     }
+
+    // Step 1: Create image URL
+    const imageData = await genCertificateImageAsync({
+      name: certificateName,
+      quiz: quizTitle ?? "AI TUTOR",
+    });
+
+    // Step 2: Create metadata URI
+    const { id: tokenId } = await createNFTMetadataAction(
+      `${quizTitle} Completion Certificate`,
+      `Congratulations to ${certificateName} on completing the ${quizTitle} quiz!`,
+      imageData.output
+    );
+    const tokenURI = `${BASE_URL}/api/?id=${tokenId}`;
+
+    // Step 3: Mint NFT
+    writeContract({
+      address: CERTIFICATE_CONTRACT_ADDRESS,
+      abi: CERTIFICATE_CONTRACT_ABI,
+      functionName: "mintNFT",
+      args: [address, tokenURI],
+    });
   };
 
   // Early return if quizData is empty

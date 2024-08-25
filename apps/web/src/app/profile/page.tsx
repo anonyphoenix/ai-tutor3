@@ -10,6 +10,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { calculateLevelAndMaxXp } from "@/lib/utils";
+import { Progress } from "@radix-ui/react-progress";
+import { progress, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
   CartesianGrid,
@@ -22,6 +25,8 @@ import {
 } from "recharts";
 import { formatEther } from "viem";
 import { useAccount } from "wagmi";
+import { useUserContext } from "../contexts/UserContext";
+import { useQuery } from "@tanstack/react-query";
 
 const BASE_URL = "https://opencampus-codex.blockscout.com/api/v2";
 
@@ -78,6 +83,22 @@ export default function StudentProfile() {
   const [coinBalanceHistory, setCoinBalanceHistory] = useState<
     CoinBalanceHistoryItem[]
   >([]);
+  const { user } = useUserContext();
+  const { data: xpData } = useQuery({
+    queryKey: ["userStats", user?.xp],
+    queryFn: () => {
+      if (!user?.xp) {
+        return null;
+      }
+      const { level, currentXp, maxXp } = calculateLevelAndMaxXp(
+        Number(user.xp)
+      );
+      const progress = (currentXp / maxXp) * 100;
+      return { level, currentXp, maxXp, progress };
+    },
+    enabled: !!user?.xp,
+    staleTime: Infinity,
+  });
 
   useEffect(() => {
     if (address) {
@@ -133,25 +154,34 @@ export default function StudentProfile() {
     <div className="container mx-auto p-4 space-y-8">
       <h1 className="text-3xl font-bold">Student Profile</h1>
 
-      {/* <div className="w-full max-w-md mx-auto p-4 space-y-4">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Level {level}</h2>
-          <p className="text-sm text-muted-foreground">
-            XP: {currentXp} / {maxXp}
-          </p>
-          <p className="text-xs text-muted-foreground">Total XP: {xp}</p>
-        </div>
-        <div className="relative pt-1">
-          <Progress value={progress} className="h-4" />
-          <motion.div
-            className="absolute top-0 left-0 h-4 bg-primary rounded-full"
-            style={{ width: `${progress}%` }}
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ type: "spring", stiffness: 100, damping: 15 }}
-          />
-        </div>
-      </div> */}
+      {xpData && user && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Level Progress</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold">Level {xpData.level}</h2>
+              <p className="text-sm text-muted-foreground">
+                XP: {xpData.currentXp} / {xpData.maxXp}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Total XP: {user.xp}
+              </p>
+            </div>
+            <div className="relative pt-1">
+              <Progress value={xpData.progress} className="h-4" />
+              <motion.div
+                className="absolute top-0 left-0 h-4 bg-primary rounded-full"
+                style={{ width: `${progress}%` }}
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>
