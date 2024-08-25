@@ -342,24 +342,23 @@ app.get("/purchases/:address", async (c) => {
   }
 });
 
-app.post("/nft-metadata/:id", async (c) => {
-  const id = c.req.param("id");
+app.post("/nft-metadata", async (c) => {
   const { name, description, image } = await c.req.json();
 
   try {
-    const updatedMetadata = await db
-      .update(nftMetadata)
-      .set({
+    const newMetadata = await db
+      .insert(nftMetadata)
+      .values({
         name,
         description,
         image,
       })
-      .where(eq(nftMetadata.id, parseInt(id)));
+      .returning();
 
-    return c.json(updatedMetadata);
+    return c.json(newMetadata[0], 201);
   } catch (error) {
-    console.error("Error updating NFT metadata:", error);
-    return c.json({ error: "Failed to update NFT metadata" }, 500);
+    console.error("Error creating NFT metadata:", error);
+    return c.json({ error: "Failed to create NFT metadata" }, 500);
   }
 });
 

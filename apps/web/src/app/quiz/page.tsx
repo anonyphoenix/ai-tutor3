@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import Confetti from "react-confetti";
 import { useSearchParams } from "next/navigation";
 import { quizDatas } from "@/utils/constants/quiz";
+import { createNFTMetadataAction } from "../actions/db";
 
 export default function Component() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -64,7 +65,12 @@ export default function Component() {
     setShowConfetti(false);
   };
 
-  const mintNFTCredential = () => {
+  const mintNFTCredential = async () => {
+    await createNFTMetadataAction(
+      "Quiz Completion",
+      "Congratulations on completing the quiz!",
+      "https://example.com/quiz-completion-nft-image.png"
+    );
     console.log("Minting NFT credential...");
   };
 

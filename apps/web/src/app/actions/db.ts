@@ -189,3 +189,40 @@ export async function spendCreditsAction(
   const result = await response.json();
   return result;
 }
+
+export async function getNFTMetadataAction(id: number) {
+  const response = await fetch(`${API_URL}/nft-metadata/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch NFT metadata");
+  }
+
+  const result = await response.json();
+  return result;
+}
+
+export async function createNFTMetadataAction(
+  name: string,
+  description: string,
+  image: string
+) {
+  const response = await fetch(`${API_URL}/nft-metadata`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name, description, image }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create NFT metadata");
+  }
+
+  const result = await response.json();
+  return result;
+}
