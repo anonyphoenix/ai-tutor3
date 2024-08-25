@@ -43,3 +43,10 @@ export const customBots = pgTable("custom_bots", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
+
+export const nftMetadata = pgTable("nft_metadata", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  image: text("image").notNull(),
+});

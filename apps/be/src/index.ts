@@ -1,4 +1,4 @@
-import { eq, sql, desc } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import {
   Chain,
@@ -8,7 +8,12 @@ import {
   parseAbiItem,
 } from "viem";
 import { db } from "./db";
-import { creditPurchases, customBots, web3Users } from "./db/schema";
+import {
+  creditPurchases,
+  customBots,
+  nftMetadata,
+  web3Users,
+} from "./db/schema";
 
 const app = new Hono();
 
@@ -334,6 +339,47 @@ app.get("/purchases/:address", async (c) => {
   } catch (error) {
     console.error("Error fetching purchases:", error);
     return c.json({ error: "Failed to fetch purchases" }, 500);
+  }
+});
+
+app.post("/nft-metadata/:id", async (c) => {
+  const id = c.req.param("id");
+  const { name, description, image } = await c.req.json();
+
+  try {
+    const updatedMetadata = await db
+      .update(nftMetadata)
+      .set({
+        name,
+        description,
+        image,
+      })
+      .where(eq(nftMetadata.id, parseInt(id)));
+
+    return c.json(updatedMetadata);
+  } catch (error) {
+    console.error("Error updating NFT metadata:", error);
+    return c.json({ error: "Failed to update NFT metadata" }, 500);
+  }
+});
+
+app.get("/nft-metadata/:id", async (c) => {
+  const id = c.req.param("id");
+
+  try {
+    const nftMetadataInfo = await db
+      .select({
+        name: nftMetadata.name,
+        description: nftMetadata.description,
+        image: nftMetadata.image,
+      })
+      .from(nftMetadata)
+      .where(eq(nftMetadata.id, parseInt(id)));
+
+    return c.json(nftMetadataInfo);
+  } catch (error) {
+    console.error("Error fetching NFT metadata:", error);
+    return c.json({ error: "Failed to fetch NFT metadata" }, 500);
   }
 });
 
