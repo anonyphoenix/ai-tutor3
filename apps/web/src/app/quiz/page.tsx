@@ -1,12 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import Confetti from "react-confetti";
-import { useSearchParams } from "next/navigation";
+import { BASE_URL } from "@/utils/constants";
+import {
+  CERTIFICATE_CONTRACT_ABI,
+  CERTIFICATE_CONTRACT_ADDRESS,
+} from "@/utils/constants/certificate";
 import { quizDatas } from "@/utils/constants/quiz";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { createNFTMetadataAction } from "../actions/db";
 
 export default function Component() {
@@ -18,10 +28,20 @@ export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
   const searchParams = useSearchParams();
   const quizId = Number(searchParams.get("id"));
+  const { address } = useAccount();
+  const { writeContract, data: hash } = useWriteContract();
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("NFT minted successfully:", hash);
+      router.push("/profile");
+    }
+  }, [isSuccess]);
 
   const quizData =
     quizDatas.find((quiz) => quiz.id === quizId)?.questions || [];
-  console.log("🚀 ~ Component ~ quizData:", quizData);
 
   useEffect(() => {
     if (timeLeft > 0 && !quizEnded) {
@@ -66,12 +86,27 @@ export default function Component() {
   };
 
   const mintNFTCredential = async () => {
-    await createNFTMetadataAction(
-      "Quiz Completion",
-      "Congratulations on completing the quiz!",
-      "https://example.com/quiz-completion-nft-image.png"
-    );
-    console.log("Minting NFT credential...");
+    if (quizData) {
+      // create image url
+
+      // create metadata uri
+      const { id: tokenId } = await createNFTMetadataAction(
+        `${quizDatas.find((quiz) => quiz.id === quizId)?.title} Completion Certificate`,
+        `Congratulations to ${address} on completing the ${quizDatas.find((quiz) => quiz.id === quizId)?.title} quiz!`,
+        "https://example.com/quiz-completion-nft-image.png"
+      );
+      const tokenURI = `${BASE_URL}/api/?id=${tokenId}`;
+
+      console.log("Minting NFT credential...");
+
+      // mint nft
+      writeContract({
+        address: CERTIFICATE_CONTRACT_ADDRESS,
+        abi: CERTIFICATE_CONTRACT_ABI,
+        functionName: "mintNFT",
+        args: [address, tokenURI],
+      });
+    }
   };
 
   // Early return if quizData is empty
@@ -161,6 +196,7 @@ export default function Component() {
             />
           )}
         </Card>
+        <Button onClick={mintNFTCredential}>Play Again</Button>
       </div>
     </>
   );
