@@ -18,6 +18,16 @@ import {
   useWriteContract,
 } from "wagmi";
 import { createNFTMetadataAction } from "../actions/db";
+import { useMutation } from "@tanstack/react-query";
+import { processGlifAction } from "../actions/tools";
+
+function useProcessGlif() {
+  const CERTIFICATE_GLIF = "cm09imbfh00004dbzfcch2w61";
+  return useMutation({
+    mutationFn: async (variables: { name: string; quiz: string }) =>
+      processGlifAction(CERTIFICATE_GLIF, [variables.name, variables.quiz]),
+  });
+}
 
 export default function Component() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -30,8 +40,17 @@ export default function Component() {
   const quizId = Number(searchParams.get("id"));
   const { address } = useAccount();
   const { writeContract, data: hash } = useWriteContract();
-  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const { isPending: isPendingTx, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
   const router = useRouter();
+  const {
+    mutateAsync: genCertificateImageAsync,
+    isPending: isGenCertificate,
+    error,
+    isError,
+  } = useProcessGlif();
+  const [certificateName, setCertificateName] = useState("");
 
   useEffect(() => {
     if (isSuccess) {
@@ -86,14 +105,19 @@ export default function Component() {
   };
 
   const mintNFTCredential = async () => {
-    if (quizData) {
+    const quizTitle = quizDatas.find((quiz) => quiz.id === quizId)?.title;
+    if (quizData && certificateName.trim()) {
       // create image url
+      const data = await genCertificateImageAsync({
+        name: certificateName,
+        quiz: quizTitle ?? "AI TUTOR",
+      });
 
       // create metadata uri
       const { id: tokenId } = await createNFTMetadataAction(
-        `${quizDatas.find((quiz) => quiz.id === quizId)?.title} Completion Certificate`,
-        `Congratulations to ${address} on completing the ${quizDatas.find((quiz) => quiz.id === quizId)?.title} quiz!`,
-        "https://example.com/quiz-completion-nft-image.png"
+        `${quizTitle} Completion Certificate`,
+        `Congratulations to ${certificateName} on completing the ${quizTitle} quiz!`,
+        data.output
       );
       const tokenURI = `${BASE_URL}/api/?id=${tokenId}`;
 
@@ -176,8 +200,24 @@ export default function Component() {
                     <p className="text-green-600 font-semibold mb-2">
                       Congratulations! You answered all questions correctly!
                     </p>
-                    <Button onClick={mintNFTCredential}>
-                      Mint NFT Credential
+                    <input
+                      type="text"
+                      placeholder="Enter name for the certificate"
+                      className="mb-2 p-2 border border-gray-300 rounded w-full"
+                      value={certificateName}
+                      onChange={(e) => setCertificateName(e.target.value)}
+                    />
+                    <Button
+                      onClick={mintNFTCredential}
+                      disabled={
+                        isGenCertificate ||
+                        isPendingTx ||
+                        !certificateName.trim()
+                      }
+                    >
+                      {isGenCertificate || isPendingTx
+                        ? "Minting..."
+                        : "Mint NFT Credential"}
                     </Button>
                   </div>
                 ) : (
@@ -196,7 +236,6 @@ export default function Component() {
             />
           )}
         </Card>
-        <Button onClick={mintNFTCredential}>Play Again</Button>
       </div>
     </>
   );

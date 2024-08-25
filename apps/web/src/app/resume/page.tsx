@@ -14,8 +14,10 @@ import { processGlifAction } from "../actions/tools";
 import { useUserContext } from "../contexts/UserContext";
 
 export function useProcessGlif() {
+  const RESUME_GLIF = "cm088lzdy00083vxrs7vpsc8r";
   return useMutation({
-    mutationFn: (inputString: string) => processGlifAction(inputString),
+    mutationFn: (inputString: string) =>
+      processGlifAction(RESUME_GLIF, [inputString, "resume"]),
   });
 }
 

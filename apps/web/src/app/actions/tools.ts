@@ -16,14 +16,17 @@ type GlifRequest = {
   inputs: [string, string];
 };
 
-export async function processGlifAction(inputString: string) {
+export async function processGlifAction(
+  glifId: string,
+  inputStrings: string[]
+) {
   if (!API_TOKEN) {
     throw new Error("GLIF API token is not set");
   }
 
   const data: GlifRequest = {
-    id: "cm088lzdy00083vxrs7vpsc8r",
-    inputs: [inputString, "resume"],
+    id: glifId,
+    inputs: [inputStrings[0], inputStrings[1]],
   };
 
   try {
