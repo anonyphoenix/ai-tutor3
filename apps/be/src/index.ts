@@ -195,6 +195,48 @@ app.get("/user/:address/credits", async (c) => {
   return c.json({ credits: user[0].totalCredits });
 });
 
+app.post("/user/:address/credits/spend", async (c) => {
+  const address = c.req.param("address");
+  const body = await c.req.json();
+  const { creditsToSpend } = body;
+
+  if (!creditsToSpend) {
+    return c.json({ error: "Credits to spend is required" }, 400);
+  }
+
+  try {
+    // Check if user already exists
+    const existingUser = await db
+      .select()
+      .from(web3Users)
+      .where(eq(web3Users.address, address))
+      .limit(1);
+
+    if (existingUser.length > 0) {
+      // User exists, check if they have enough credits
+      const userCredits = Number(existingUser[0].totalCredits ?? 0);
+      if (userCredits < creditsToSpend) {
+        return c.json({ error: "Insufficient credits" }, 400);
+      }
+
+      // User has enough credits, update their balance
+      await db
+        .update(web3Users)
+        .set({
+          totalCredits: sql`${web3Users.totalCredits} - ${creditsToSpend}`,
+        })
+        .where(eq(web3Users.address, address));
+
+      return c.json({ message: "Credits spent successfully" });
+    } else {
+      return c.json({ error: "User not found" }, 404);
+    }
+  } catch (error) {
+    console.error("Error spending credits:", error);
+    return c.json({ error: "Failed to spend credits" }, 500);
+  }
+});
+
 // New endpoint to add XP
 app.post("/user/:address/xp", async (c) => {
   const address = c.req.param("address");
