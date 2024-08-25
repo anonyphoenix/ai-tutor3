@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { shortenEthAddress } from "@/utils";
 
 export type Tutor = {
   id: number;
@@ -18,11 +19,6 @@ export type Tutor = {
   isPublic: boolean | null;
   createdAt: Date | null;
   updatedAt: Date | null;
-};
-
-const shortenEthAddress = (address: string | null): string => {
-  if (!address) return "";
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
 export default function Component() {

@@ -1,6 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -27,6 +33,11 @@ import { formatEther } from "viem";
 import { useAccount } from "wagmi";
 import { useUserContext } from "../contexts/UserContext";
 import { useQuery } from "@tanstack/react-query";
+import { Item } from "@/utils/types";
+import { fetchNFTs } from "../actions/blockscout";
+import { shortenEthAddress } from "@/utils";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const BASE_URL = "https://opencampus-codex.blockscout.com/api/v2";
 
@@ -99,6 +110,11 @@ export default function StudentProfile() {
     enabled: !!user?.xp,
     staleTime: Infinity,
   });
+  const nftsQuery = useQuery<Item[], Error>({
+    queryKey: ["nfts", address],
+    queryFn: () => fetchNFTs(address!).then((response) => response.items),
+    enabled: !!address, // Only run the query if address is defined
+  });
 
   useEffect(() => {
     if (address) {
@@ -153,75 +169,115 @@ export default function StudentProfile() {
   return (
     <div className="container mx-auto p-4 space-y-8">
       <h1 className="text-3xl font-bold">Student Profile</h1>
+      <div className="grid grid-cols-3 gap-4">
+        {xpData && user && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Level Progress</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center space-y-2">
+                <h2 className="text-2xl font-bold">Level {xpData.level}</h2>
+                <p className="text-sm text-muted-foreground">
+                  XP: {xpData.currentXp} / {xpData.maxXp}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Total XP: {user.xp}
+                </p>
+              </div>
+              <div className="relative pt-1">
+                <Progress value={xpData.progress} className="h-4" />
+                <motion.div
+                  className="absolute top-0 left-0 h-4 bg-primary rounded-full"
+                  style={{ width: `${progress}%` }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-      {xpData && user && (
         <Card>
           <CardHeader>
-            <CardTitle>Level Progress</CardTitle>
+            <CardTitle>Address Information</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold">Level {xpData.level}</h2>
-              <p className="text-sm text-muted-foreground">
-                XP: {xpData.currentXp} / {xpData.maxXp}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Total XP: {user.xp}
-              </p>
-            </div>
-            <div className="relative pt-1">
-              <Progress value={xpData.progress} className="h-4" />
-              <motion.div
-                className="absolute top-0 left-0 h-4 bg-primary rounded-full"
-                style={{ width: `${progress}%` }}
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ type: "spring", stiffness: 100, damping: 15 }}
-              />
-            </div>
+            <p>
+              <strong>Address:</strong>{" "}
+              {shortenEthAddress(addressInfo?.hash || "")}
+            </p>
+            <p>
+              <strong>Name:</strong> {addressInfo?.name || "N/A"}
+            </p>
+            <p>
+              <strong>Is Contract:</strong>{" "}
+              {addressInfo?.is_contract ? "Yes" : "No"}
+            </p>
           </CardContent>
         </Card>
-      )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Address Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>
-            <strong>Address:</strong> {addressInfo?.hash}
-          </p>
-          <p>
-            <strong>Name:</strong> {addressInfo?.name || "N/A"}
-          </p>
-          <p>
-            <strong>Is Contract:</strong>{" "}
-            {addressInfo?.is_contract ? "Yes" : "No"}
-          </p>
-        </CardContent>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Activity Summary</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
+              <strong>Transactions:</strong>{" "}
+              {addressCounters?.transactions_count}
+            </p>
+            <p>
+              <strong>Token Transfers:</strong>{" "}
+              {addressCounters?.token_transfers_count}
+            </p>
+            <p>
+              <strong>Gas Used:</strong> {addressCounters?.gas_usage_count}
+            </p>
+            <p>
+              <strong>Blocks Validated:</strong>{" "}
+              {addressCounters?.validations_count}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Activity Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>
-            <strong>Transactions:</strong> {addressCounters?.transactions_count}
-          </p>
-          <p>
-            <strong>Token Transfers:</strong>{" "}
-            {addressCounters?.token_transfers_count}
-          </p>
-          <p>
-            <strong>Gas Used:</strong> {addressCounters?.gas_usage_count}
-          </p>
-          <p>
-            <strong>Blocks Validated:</strong>{" "}
-            {addressCounters?.validations_count}
-          </p>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {nftsQuery.data &&
+          nftsQuery.data.map((nft) => (
+            <Card key={nft.id} className="overflow-hidden">
+              <CardHeader className="p-4">
+                <CardTitle className="text-lg font-bold truncate">
+                  {nft.metadata?.name || `NFT #${nft.id}`}
+                </CardTitle>
+              </CardHeader>
+              {nft.image_url && (
+                <div className="relative aspect-square">
+                  <img
+                    src={nft.image_url}
+                    alt={nft.metadata?.name || `NFT #${nft.id}`}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              )}
+              <CardContent className="p-4">
+                <p className="text-sm text-gray-600 line-clamp-3">
+                  {nft.metadata?.description || "No description available"}
+                </p>
+              </CardContent>
+              <CardFooter className="w-full p-4 bg-gray-50">
+                <Link
+                  href={`https://opencampus-codex.blockscout.com/token/${nft.token.address}/instance/${nft.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full"
+                >
+                  <Button className="w-full">Open in Explorer</Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          ))}
+      </div>
 
       <Tabs defaultValue="tokens">
         <TabsList>
