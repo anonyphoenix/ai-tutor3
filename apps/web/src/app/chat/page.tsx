@@ -5,11 +5,16 @@ import { useEffect, useState } from "react";
 import { readStreamableValue } from "ai/rsc";
 import { continueConversation } from "../actions/ai";
 import { Tutor } from "@/components/frontpage/section1";
-import { fetchPublicBotsAction } from "../actions/db";
+import {
+  addXpAction,
+  fetchPublicBotsAction,
+  spendCreditsAction,
+} from "../actions/db";
 import { useSearchParams } from "next/navigation";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
+import { useUserContext } from "../contexts/UserContext";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -19,6 +24,7 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const searchParams = useSearchParams();
   const botId = searchParams.get("botId");
+  const { user, refreshUser } = useUserContext();
 
   const [tutor, setTutor] = useState<Tutor | null>(null);
 
@@ -85,6 +91,13 @@ export default function Chat() {
 
             setMessages(newMessages);
             setInput("");
+
+            // exp
+            if (user) {
+              await addXpAction(user.address, 10);
+              await spendCreditsAction(user.address, 2);
+              await refreshUser();
+            }
 
             const result = await continueConversation(newMessages);
 

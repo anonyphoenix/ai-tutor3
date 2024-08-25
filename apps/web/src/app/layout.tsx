@@ -39,7 +39,7 @@ export default function RootLayout(props: { children: ReactNode }) {
           <AppKitProvider initialState={initialState}>
             <UserProvider>
               <Header />
-              <div className="pt-16">{props.children}</div>
+              <div className="pt-20">{props.children}</div>
               <Toaster />
             </UserProvider>
           </AppKitProvider>

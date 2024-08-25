@@ -24,7 +24,7 @@ const Header = (props: HeaderProps) => {
             AI Tutor
           </div>
         </Link>
-        <nav className="flex space-x-4">
+        <nav className="flex items-center space-x-4">
           <XpBar xp={user?.xp ?? "0"} />
           <Link href="/resume" passHref>
             <Button variant="link">Resume Builder</Button>
@@ -39,7 +39,6 @@ const Header = (props: HeaderProps) => {
           <Link href="/credits" passHref>
             <Button variant="outline" size="sm" className="flex items-center">
               <Plus className="h-4 w-4 mr-1" />
-
               {address ? (
                 <span className="font-semibold ml-4 mr-2">
                   {credits ?? "Loading..."}
@@ -49,7 +48,6 @@ const Header = (props: HeaderProps) => {
                   {/* Connect First */}
                 </span>
               )}
-
               <Coins className="text-yellow-400 w-4" />
             </Button>
           </Link>

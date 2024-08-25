@@ -169,3 +169,23 @@ export async function getUserAction(address: string) {
   const result = await response.json();
   return result;
 }
+
+export async function spendCreditsAction(
+  address: string,
+  creditsToSpend: number
+) {
+  const response = await fetch(`${API_URL}/user/${address}/credits/spend`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ creditsToSpend }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to spend credits");
+  }
+
+  const result = await response.json();
+  return result;
+}
