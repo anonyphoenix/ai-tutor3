@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/utils/constants";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { formatEther, parseEther } from "viem";
@@ -26,6 +25,10 @@ import {
   Purchase,
 } from "../actions/db";
 import { useUserContext } from "../contexts/UserContext";
+import {
+  TOPUP_CONTRACT_ABI,
+  TOPUP_CONTRACT_ADDRESS,
+} from "@/utils/constants/topup";
 
 const CREDITS_PER_ETH = 10000;
 
@@ -86,8 +89,8 @@ export default function Component() {
 
     const cost = calculateCost(credits);
     writeContract({
-      address: CONTRACT_ADDRESS,
-      abi: CONTRACT_ABI,
+      address: TOPUP_CONTRACT_ADDRESS,
+      abi: TOPUP_CONTRACT_ABI,
       functionName: "topUpCredits",
       args: [],
       value: parseEther(cost.toString()),
