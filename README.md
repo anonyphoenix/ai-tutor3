@@ -1,10 +1,14 @@
-# ai-tutor3
+<h1 align="center">AI Tutor</h1>
 
-![Banner](https://github.com/user-attachments/assets/0bef7def-b75d-4ace-8c8f-bde145ea7949 =300x169)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/0bef7def-b75d-4ace-8c8f-bde145ea7949" alt="Banner" style="width: 50%; max-width: 1280px; aspect-ratio: 16/9; object-fit: cover;">
+</div>
 
-AI-powered learning with blockchain credibility
+<p align="center"><strong>AI-powered learning with blockchain credibility</strong></p>
 
-Demo: https://ai-tutor3-web.vercel.app/
+## Demo
+
+https://ai-tutor3-web.vercel.app/
 
 ## Description
 
