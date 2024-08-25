@@ -25,7 +25,7 @@ const Header = (props: HeaderProps) => {
           </div>
         </Link>
         <nav className="flex items-center space-x-4">
-          <XpBar xp={user?.xp ?? "0"} />
+          {address && <XpBar xp={user?.xp ?? "0"} />}
           <Link href="/resume" passHref>
             <Button variant="link">Resume Builder</Button>
           </Link>
@@ -37,19 +37,20 @@ const Header = (props: HeaderProps) => {
       <div className="flex items-center space-x-4">
         <div className="flex items-center">
           <Link href="/credits" passHref>
-            <Button variant="outline" size="sm" className="flex items-center">
-              <Plus className="h-4 w-4 mr-1" />
-              {address ? (
+            {address ? (
+              <Button variant="outline" size="sm" className="flex items-center">
+                <Plus className="h-4 w-4 mr-1" />
                 <span className="font-semibold ml-4 mr-2">
                   {credits ?? "Loading..."}
                 </span>
-              ) : (
-                <span className="font-semibold ml-4 mr-2">
-                  {/* Connect First */}
-                </span>
-              )}
-              <Coins className="text-yellow-400 w-4" />
-            </Button>
+
+                <Coins className="text-yellow-400 w-4" />
+              </Button>
+            ) : (
+              <span className="font-semibold ml-4 mr-2">
+                {/* Connect First */}
+              </span>
+            )}
           </Link>
         </div>
         <w3m-button />

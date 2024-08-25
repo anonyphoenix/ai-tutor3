@@ -15,6 +15,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
 import { useUserContext } from "../contexts/UserContext";
+import { CHAT_COST } from "@/utils/constants";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -94,8 +95,8 @@ export default function Chat() {
 
             // exp
             if (user) {
-              await addXpAction(user.address, 10);
-              await spendCreditsAction(user.address, 2);
+              await addXpAction(user.address, CHAT_COST * 5);
+              await spendCreditsAction(user.address, CHAT_COST);
               await refreshUser();
             }
 
@@ -118,6 +119,7 @@ export default function Chat() {
             placeholder="Say something..."
             onChange={(e) => setInput(e.target.value)}
           />
+          <span className="text-gray-400">🪄 {CHAT_COST} credits</span>
         </form>
       </div>
     </>

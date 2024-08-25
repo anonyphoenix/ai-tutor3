@@ -1,3 +1,7 @@
+export const CHAT_COST = 5;
+export const CREATE_CHAT_COST = 15;
+export const GENERATE_RESUME_COST = 20;
+
 export const CONTRACT_ADDRESS = "0xd74a7CC422443ed6606a953B5428305Df23b1047";
 
 export const CONTRACT_ABI = [

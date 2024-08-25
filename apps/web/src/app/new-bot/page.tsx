@@ -19,8 +19,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { createCustomBotAction } from "../actions/db";
+import {
+  addXpAction,
+  createCustomBotAction,
+  spendCreditsAction,
+} from "../actions/db";
 import { useAccount } from "wagmi";
+import { CREATE_CHAT_COST, GENERATE_RESUME_COST } from "@/utils/constants";
+import { useUserContext } from "../contexts/UserContext";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -40,6 +46,7 @@ export default function CreateCustomBotPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { address } = useAccount();
+  const { user, refreshUser } = useUserContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,6 +70,11 @@ export default function CreateCustomBotPage() {
 
     setIsLoading(true);
     try {
+      if (user) {
+        await addXpAction(user.address, CREATE_CHAT_COST * 5);
+        await spendCreditsAction(user.address, CREATE_CHAT_COST);
+        await refreshUser();
+      }
       // Assuming the user's address is available. In a real app, you'd get this from authentication.
       await createCustomBotAction({
         ...values,
@@ -168,6 +180,9 @@ export default function CreateCustomBotPage() {
           <Button type="submit" disabled={isLoading}>
             {isLoading ? "Creating..." : "Create Bot"}
           </Button>
+          <span className="text-gray-400 pl-2">
+            🪄 {CREATE_CHAT_COST} credits
+          </span>
         </form>
       </Form>
     </div>

@@ -4,11 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
+import { GENERATE_RESUME_COST } from "@/utils/constants";
 import { useMutation } from "@tanstack/react-query";
 import { Heart, Share2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { addXpAction, spendCreditsAction } from "../actions/db";
 import { processGlifAction } from "../actions/tools";
+import { useUserContext } from "../contexts/UserContext";
 
 export function useProcessGlif() {
   return useMutation({
@@ -26,6 +29,7 @@ export default function Component() {
     isError,
     data: generatedResumeUrl,
   } = useProcessGlif();
+  const { user, refreshUser } = useUserContext();
 
   useEffect(() => {
     if (isError) {
@@ -69,12 +73,23 @@ export default function Component() {
             onChange={(e) => setResumeContent(e.target.value)}
           />
           <Button
-            onClick={() => processGlif(resumeContent)}
+            onClick={async () => {
+              if (user) {
+                await addXpAction(user.address, GENERATE_RESUME_COST * 5);
+                await spendCreditsAction(user.address, GENERATE_RESUME_COST);
+                await refreshUser();
+
+                processGlif(resumeContent);
+              }
+            }}
             className="w-full bg-black text-white hover:bg-gray-800"
             disabled={isPending || !resumeContent}
           >
             {isPending ? "Generating..." : "Generate Resume"}
           </Button>
+          <span className="text-gray-400">
+            🪄 {GENERATE_RESUME_COST} credits
+          </span>
         </div>
         <div className="w-1/2 p-4 bg-white border-l flex flex-col">
           <h3 className="text-lg font-semibold mb-2">Generated Resume</h3>
