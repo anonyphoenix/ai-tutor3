@@ -13,7 +13,7 @@ import { addXpAction, spendCreditsAction } from "../actions/db";
 import { processGlifAction } from "../actions/tools";
 import { useUserContext } from "../contexts/UserContext";
 
-export function useProcessGlif() {
+function useProcessGlif() {
   const RESUME_GLIF = "cm088lzdy00083vxrs7vpsc8r";
   return useMutation({
     mutationFn: (inputString: string) =>
