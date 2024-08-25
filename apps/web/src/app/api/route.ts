@@ -1,15 +1,23 @@
 import { getNFTMetadataAction } from "../actions/db";
 
 export async function GET(request: Request) {
-  const id = request.url.split("/").pop();
+  const url = new URL(request.url);
+  const id = url.searchParams.get("id");
   if (id) {
     const nftMetadata = await getNFTMetadataAction(Number(id));
-    return new Response(JSON.stringify(nftMetadata), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    if (Array.isArray(nftMetadata)) {
+      return new Response(JSON.stringify(nftMetadata[0]), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } else {
+      return new Response(JSON.stringify(nftMetadata), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
   } else {
-    return new Response("Hello, World!", { status: 200 });
+    return new Response("No ID provided", { status: 400 });
   }
 }
 
