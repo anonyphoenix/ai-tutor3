@@ -16,7 +16,7 @@ const Header = (props: HeaderProps) => {
   const { credits, user } = useUserContext();
 
   return (
-    <header className="fixed z-50 top-0 left-0 w-full flex justify-between items-center p-4 bg-white/30 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
+    <header className="fixed z-50 top-0 left-0 w-full flex justify-between items-center p-4 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
       <div className="flex items-center">
         <Link href="/" passHref>
           <div className="text-2xl font-bold flex items-center cursor-pointer mr-6">
@@ -29,7 +29,7 @@ const Header = (props: HeaderProps) => {
           <Link href="/resume" passHref>
             <Button variant="link">Resume Builder</Button>
           </Link>
-          <Link href="/quiz" passHref>
+          <Link href="/select-quiz" passHref>
             <Button variant="link">Quiz</Button>
           </Link>
         </nav>
@@ -43,7 +43,6 @@ const Header = (props: HeaderProps) => {
                 <span className="font-semibold ml-4 mr-2">
                   {credits ?? "Loading..."}
                 </span>
-
                 <Coins className="text-yellow-400 w-4" />
               </Button>
             ) : (

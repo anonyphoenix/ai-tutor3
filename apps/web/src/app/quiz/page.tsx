@@ -5,34 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import Confetti from "react-confetti";
-
-const quizData = [
-  {
-    question: "What does HTML stand for?",
-    options: [
-      "Hyper Text Preprocessor",
-      "Hyper Text Markup Language",
-      "Hyper Text Multiple Language",
-      "Hyper Tool Multi Language",
-    ],
-    correctAnswer: 1,
-  },
-  {
-    question: "What does CSS stand for?",
-    options: [
-      "Computer Style Sheets",
-      "Creative Style Sheets",
-      "Cascading Style Sheets",
-      "Colorful Style Sheets",
-    ],
-    correctAnswer: 2,
-  },
-  {
-    question: "Which language runs in a web browser?",
-    options: ["Java", "C", "Python", "JavaScript"],
-    correctAnswer: 3,
-  },
-];
+import { useSearchParams } from "next/navigation";
+import { quizDatas } from "@/utils/constants/quiz";
 
 export default function Component() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -41,6 +15,12 @@ export default function Component() {
   const [quizEnded, setQuizEnded] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  const searchParams = useSearchParams();
+  const quizId = Number(searchParams.get("id"));
+
+  const quizData =
+    quizDatas.find((quiz) => quiz.id === quizId)?.questions || [];
+  console.log("🚀 ~ Component ~ quizData:", quizData);
 
   useEffect(() => {
     if (timeLeft > 0 && !quizEnded) {
@@ -57,14 +37,14 @@ export default function Component() {
       const timer = setTimeout(() => setShowConfetti(false), 5000); // Stop confetti after 5 seconds
       return () => clearTimeout(timer);
     }
-  }, [quizEnded, correctAnswers]);
+  }, [quizEnded, correctAnswers, quizData.length]);
 
   const handleAnswerSelect = (index: number) => {
     setSelectedAnswer(index);
   };
 
   const handleNextQuestion = () => {
-    if (selectedAnswer === quizData[currentQuestion].correctAnswer) {
+    if (selectedAnswer === quizData[currentQuestion]?.correctAnswer) {
       setCorrectAnswers(correctAnswers + 1);
     }
     if (currentQuestion < quizData.length - 1) {
@@ -87,6 +67,11 @@ export default function Component() {
   const mintNFTCredential = () => {
     console.log("Minting NFT credential...");
   };
+
+  // Early return if quizData is empty
+  if (quizData.length === 0) {
+    return <div>No quiz data available.</div>;
+  }
 
   return (
     <>
