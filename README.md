@@ -90,3 +90,7 @@ The app is structured into the following components:
 - `apps/web/src/app/actions/db.ts`: This is the database actions file.
 - `apps/web/src/components`: This is where the application components are defined.
 - `apps/web/src/components/header.tsx`: This is the header component file.
+
+## Recap
+
+![Recap](https://github.com/user-attachments/assets/1c6563b9-2575-4346-b1bd-074b7e2e78bd)
